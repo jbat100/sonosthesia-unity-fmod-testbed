@@ -1,4 +1,6 @@
-using FMODUnity;
+using System;
+using FMOD.Studio;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,24 +11,39 @@ namespace Sonosthesia
         private const string BASS_VOLUME_PARAMETER = "BassVolume";
         private const string DRUMS_VOLUME_PARAMETER = "DrumsVolume";
 
-        [SerializeField] private StudioEventEmitter _emitter;
+        [SerializeField] private FMODEventInstance _instance;
         
         [SerializeField] private Slider _bassSlider;
         [SerializeField] private Slider _drumsSlider;
 
-        protected virtual void Start()
-        {
-            //_emitter.EventDescription.loadSampleData();
+        private IDisposable _instanceSubscription;
+        private readonly CompositeDisposable _sliderSubscriptions = new();
 
-            Setup(_bassSlider, BASS_VOLUME_PARAMETER);
-            Setup(_drumsSlider, DRUMS_VOLUME_PARAMETER);
+        protected virtual void OnEnable()
+        {
+            _instanceSubscription = _instance.InstanceObservable.Subscribe(i =>
+            {
+                _sliderSubscriptions.Clear();
+                
+                IDisposable Setup(Slider slider, EventInstance instance, string parameter)
+                {
+                    instance.getParameterByName(parameter, out float parameterValue);
+                    slider.value = parameterValue;
+                    return slider.onValueChanged.AsObservable().Subscribe(sliderValue =>
+                    {
+                        instance.setParameterByName(parameter, sliderValue);
+                    });
+                }
+                
+                _sliderSubscriptions.Add(Setup(_bassSlider, i, BASS_VOLUME_PARAMETER));
+                _sliderSubscriptions.Add(Setup(_drumsSlider, i, DRUMS_VOLUME_PARAMETER));
+            });
         }
 
-        private void Setup(Slider slider, string parameter)
+        protected virtual void OnDisable()
         {
-            _emitter.EventInstance.getParameterByName(parameter, out float value);
-            slider.value = value;
-            slider.onValueChanged.AddListener(val => _emitter.SetParameter(parameter, val));
+            _instanceSubscription?.Dispose();
+            _sliderSubscriptions.Clear();
         }
     }    
 }

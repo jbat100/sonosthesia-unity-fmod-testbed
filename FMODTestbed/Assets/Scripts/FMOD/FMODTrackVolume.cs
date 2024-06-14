@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
@@ -8,8 +6,7 @@ namespace Sonosthesia
 {
     public class FMODTrackVolume : MonoBehaviour
     {
-        [FMODUnity.EventRef]
-        public string fmodEventPath;
+        public EventReference fmodEventPath;
         
         private EventInstance eventInstance;
 
