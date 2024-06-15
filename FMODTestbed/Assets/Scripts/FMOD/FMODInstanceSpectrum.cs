@@ -14,13 +14,18 @@ namespace Sonosthesia
         [SerializeField] private FMODEventInstance _instance;
 
         [SerializeField] private DSP_FFT_WINDOW _windowType;
+
+        private const float DEFAULT_SAMPLE_RATE = 44000;
         
         private DSP _fftDSP;
         private ChannelGroup _instanceChannelGroup;
         private EventInstance _currentInstance;
+        private float _sampleRate;
         private bool _setupDone;
         private float[] _spectrum;
         private IDisposable _subscription;
+
+        protected override float OutputSampleRate => _setupDone ? _sampleRate : DEFAULT_SAMPLE_RATE;
 
         protected virtual void OnDestroy()
         {
@@ -108,6 +113,15 @@ namespace Sonosthesia
             {
                 return false;
             }
+
+            result = RuntimeManager.CoreSystem.getSoftwareFormat(out int sampleRate, out _, out _);
+            UnityEngine.Debug.LogWarning($"getSoftwareFormat {result}");
+            if (result != RESULT.OK)
+            {
+                return false;
+            }
+
+            _sampleRate = sampleRate;
             
             result = _fftDSP.setParameterInt((int)DSP_FFT.WINDOWTYPE, (int)_windowType);
             UnityEngine.Debug.LogWarning($"setParameterInt {DSP_FFT.WINDOWTYPE} {result}");
