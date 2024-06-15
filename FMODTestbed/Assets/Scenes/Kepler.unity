@@ -221,13 +221,14 @@ GameObject:
   m_Component:
   - component: {fileID: 49742999}
   - component: {fileID: 49743000}
+  - component: {fileID: 49743001}
   m_Layer: 0
   m_Name: Volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &49742999
 Transform:
   m_ObjectHideFlags: 0
@@ -256,6 +257,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _instance: {fileID: 1525061135}
+  _selector: 1
+  _target: {fileID: 49743001}
+--- !u!114 &49743001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49742998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 365d9c7b8b134914a7dd49abc12cb503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _log: 1
+  _distinct: 0
 --- !u!1 &102741250
 GameObject:
   m_ObjectHideFlags: 0
@@ -1985,13 +2002,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1617344747}
   - component: {fileID: 1617344748}
+  - component: {fileID: 1617344749}
   m_Layer: 0
   m_Name: ParallelVolume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1617344747
 Transform:
   m_ObjectHideFlags: 0
@@ -2020,6 +2038,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _instance: {fileID: 1525061135}
+  _selector: 1
+  _target: {fileID: 1617344749}
+--- !u!114 &1617344749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617344746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 365d9c7b8b134914a7dd49abc12cb503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _log: 1
+  _distinct: 0
 --- !u!1 &1638051858
 GameObject:
   m_ObjectHideFlags: 0

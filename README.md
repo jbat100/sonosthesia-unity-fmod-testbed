@@ -2,6 +2,7 @@
 
 ## Resources
 
+- FMOD Unity [Scripting Examples](https://www.fmod.com/docs/2.02/unity/examples.html)
 - FMOD [Effects Parameters](https://www.fmod.com/docs/2.03/api/core-api-common-dsp-effects.html)
 - FMOD [Effects Reference](https://www.fmod.com/docs/2.03/api/effects-reference.html)
 - Great YouTube [tutorial](https://www.youtube.com/watch?v=qbv891Z_3fU) for Unity FMOD DSP 
