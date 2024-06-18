@@ -1,13 +1,17 @@
 using System;
+using System.Collections.Generic;
+using FMOD;
 using FMOD.Studio;
 using UniRx;
 using UnityEngine;
 
 namespace Sonosthesia
 {
-    public abstract class FMODInstanceProcessor : MonoBehaviour
+    public class FMODInstanceProcessor : MonoBehaviour
     {
         [SerializeField] private FMODInstance _instance;
+
+        [SerializeField] private List<FMODProcessor> _processors;
         
         private IDisposable _subscription;
         private EventInstance _currentInstance;
@@ -49,17 +53,46 @@ namespace Sonosthesia
             
             Process();
         }
-        
-        protected abstract bool TrySetup(EventInstance instance);
-        
-        protected abstract void Cleanup();
+
+        protected virtual bool TrySetup(EventInstance instance)
+        {
+            RESULT result = instance.getChannelGroup(out ChannelGroup channelGroup); 
+            UnityEngine.Debug.LogWarning($"getChannelGroup {result}");
+            if (result != RESULT.OK)
+            {
+                return false;
+            }
+            
+            foreach (FMODProcessor processor in _processors)
+            {
+                if (!processor.TrySetup(channelGroup))
+                {
+                    UnityEngine.Debug.LogError($"{this} failed setup {processor}");
+                    Cleanup();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        protected virtual void Cleanup()
+        {
+            foreach (FMODProcessor processor in _processors)
+            {
+                processor.Cleanup();
+            }
+        }
         
         /// <summary>
         /// Called on each Update if Processor is properly set up
         /// </summary>
         protected virtual void Process()
         {
-            
+            foreach (FMODProcessor processor in _processors)
+            {
+                processor.Process();
+            }
         }
     }
 }

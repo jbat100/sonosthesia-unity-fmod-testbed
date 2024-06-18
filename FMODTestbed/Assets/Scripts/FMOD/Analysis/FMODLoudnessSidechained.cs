@@ -1,18 +1,19 @@
-using System;
-using System.Runtime.InteropServices;
 using FMOD;
 using FMOD.Studio;
 using FMODUnity;
 
 namespace Sonosthesia
 {
-    public class FMODInstanceLoudnessSidechained : FMODInstanceLoudness
+    // Misnomer, creating another "dsp" channel group and adding the "instance" channel group
+    // to it does not create a side chain, it feeds the instance group into the dsp group 
+    // which then bubbles up to master in a seemingly inevitable way
+    
+    public class FMODLoudnessSidechained : FMODLoudness
     {
-        private ChannelGroup _originalChannelGroup;
         private ChannelGroup _dspChannelGroup;
         private DSP _meterDSP;
 
-        protected override void Cleanup()
+        protected override void PerformCleanup(ChannelGroup channelGroup)
         {
             if (_dspChannelGroup.hasHandle() && _meterDSP.hasHandle())
             {
@@ -32,14 +33,8 @@ namespace Sonosthesia
             }
         }
         
-        protected override bool TrySetup(EventInstance instance)
+        protected override bool PerformTrySetup(ChannelGroup channelGroup)
         {
-            if (!instance.isValid())
-            {
-                UnityEngine.Debug.LogWarning($"Setup called with invalid handle");
-                return false;
-            }
-            
             RESULT result;
             
             result = RuntimeManager.CoreSystem.createChannelGroup("Parrallel DSP", out _dspChannelGroup);
@@ -56,14 +51,7 @@ namespace Sonosthesia
                 return false;
             }
 
-            result = instance.getChannelGroup(out _originalChannelGroup); 
-            UnityEngine.Debug.LogWarning($"{nameof(TrySetup)} getChannelGroup {result}");
-            if (result != RESULT.OK)
-            {
-                return false;
-            }
-
-            result = _dspChannelGroup.addGroup(_originalChannelGroup); 
+            result = _dspChannelGroup.addGroup(channelGroup); 
             UnityEngine.Debug.LogWarning($"{nameof(TrySetup)} getChannelGroup {result}");
             if (result != RESULT.OK)
             {

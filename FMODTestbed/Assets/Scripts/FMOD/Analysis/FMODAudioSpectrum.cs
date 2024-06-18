@@ -5,7 +5,7 @@ namespace Sonosthesia
 {
     public class FMODAudioSpectrum : AudioSpectrum
     {
-        [SerializeField] private FMODInstanceFFT _instanceFFT;
+        [SerializeField] private FMODFFT _instanceFFT;
 
         [SerializeField] private FMODSampleRate _sampleRate;
 

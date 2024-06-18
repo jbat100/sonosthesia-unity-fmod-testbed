@@ -6,6 +6,8 @@ using Sonosthesia.Pack;
 using Sonosthesia.Signal;
 using UnityEngine;
 
+// WIP : not functional
+
 namespace Sonosthesia
 {
     public enum AudioAnalysisBand
@@ -24,7 +26,7 @@ namespace Sonosthesia
 
         protected DSP FilterDSP => _filterDSP;
 
-        protected abstract RESULT CreateFilter(ChannelGroup dspGroup, out DSP filterDSP);
+        protected abstract RESULT CreateFilter(out DSP filterDSP);
 
         public bool GetLoudness(LoudnessSelector selector, out float loudness)
         {
@@ -32,6 +34,71 @@ namespace Sonosthesia
         }
         
         public bool TrySetup(EventInstance instance)
+        {
+            return TrySetupWithSideChain(instance);
+        }
+
+        private bool TrySetupWithSideChain(EventInstance instance)
+        {
+            if (!instance.isValid())
+            {
+                UnityEngine.Debug.LogWarning($"Setup called with invalid handle");
+                return false;
+            }
+            
+            RESULT result;
+            
+            result = instance.getChannelGroup(out ChannelGroup channelGroup); 
+            UnityEngine.Debug.LogWarning($"{nameof(TrySetupWithSideChain)} getChannelGroup {result}");
+            if (result != RESULT.OK)
+            {
+                return false;
+            }
+            
+            result = channelGroup.getDSP(CHANNELCONTROL_DSP_INDEX.HEAD, out DSP headDSP); 
+            UnityEngine.Debug.LogWarning($"{nameof(TrySetupWithSideChain)} getDSP {result}");
+            if (result != RESULT.OK)
+            {
+                return false;
+            }
+
+            if ( CreateFilter(out _filterDSP) != RESULT.OK )
+            {
+                return false;
+            }
+
+            result = _filterDSP.addInput(headDSP, out DSPConnection filterConnection, DSPCONNECTION_TYPE.SEND);
+            UnityEngine.Debug.LogWarning($"{nameof(TrySetupWithSideChain)} addInput headDSP result");
+            if (result != RESULT.OK)
+            {
+                return false;
+            }
+            
+            result = RuntimeManager.CoreSystem.createDSPByType(DSP_TYPE.LOUDNESS_METER, out _loudnessDSP);
+            UnityEngine.Debug.LogWarning($"{nameof(TrySetupWithSideChain)} createDSPByType {DSP_TYPE.LOUDNESS_METER} {result}");
+            if (result != RESULT.OK)
+            {
+                return false;
+            }
+            
+            result = _loudnessDSP.addInput(_filterDSP, out DSPConnection loudnessConnection, DSPCONNECTION_TYPE.SEND);
+            UnityEngine.Debug.LogWarning($"{nameof(TrySetupWithSideChain)} addInput headDSP {result}");
+            if (result != RESULT.OK)
+            {
+                return false;
+            }
+
+            result = _loudnessDSP.setActive(true);
+            UnityEngine.Debug.LogWarning($"{nameof(TrySetupWithSideChain)} setActive {result}");
+            if (result != RESULT.OK)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool TrySetupWithParentChannelGroup(EventInstance instance)
         {
             if (!instance.isValid())
             {
@@ -41,19 +108,19 @@ namespace Sonosthesia
             
             RESULT result;
 
-            result = FMODDSPUtils.CreateSideChainChannelGroup(" Audio Analysis", instance, out _dspChannelGroup);
+            result = FMODDSPUtils.CreateParentChannelGroup(" Audio Analysis", instance, out _dspChannelGroup);
             if (result != RESULT.OK)
             {
                 return false;
             }
 
-            result = CreateFilter(_dspChannelGroup, out _filterDSP);
+            result = CreateFilter(out _filterDSP);
             if (result != RESULT.OK)
             {
                 return false;
             }
             
-            result = _dspChannelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.TAIL, _filterDSP);
+            result = _dspChannelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.HEAD, _filterDSP);
             UnityEngine.Debug.LogWarning($"{nameof(TrySetup)} addDSP {result}");
             if (result != RESULT.OK)
             {
@@ -67,7 +134,7 @@ namespace Sonosthesia
                 return false;
             }
             
-            result = FMODDSPUtils.InsertDSP(_dspChannelGroup, DSP_TYPE.LOUDNESS_METER, CHANNELCONTROL_DSP_INDEX.TAIL, out _loudnessDSP);
+            result = FMODDSPUtils.InsertDSP(_dspChannelGroup, DSP_TYPE.LOUDNESS_METER, CHANNELCONTROL_DSP_INDEX.HEAD, out _loudnessDSP);
             if (result != RESULT.OK)
             {
                 return false;
@@ -139,7 +206,7 @@ namespace Sonosthesia
         protected abstract DSP_TYPE DSPType { get; }
         protected abstract int CutoffParameterIndex { get; }
         
-        protected override RESULT CreateFilter(ChannelGroup dspGroup, out DSP filterDSP)
+        protected override RESULT CreateFilter(out DSP filterDSP)
         {
             RESULT result = RuntimeManager.CoreSystem.createDSPByType(DSPType, out filterDSP);
             UnityEngine.Debug.LogWarning($"{this} createDSPByType {result}");
@@ -189,8 +256,8 @@ namespace Sonosthesia
 
     internal class EQBandLoudnessAnalysis : BandLoudnessAnalysis
     {
-        private float PASS_GAIN = 0;
-        private float BLOCK_GAIN = -80;
+        private const float PASS_GAIN = 0;
+        private const float BLOCK_GAIN = -80;
         
         private readonly AudioAnalysisBand _band;
         private readonly DSP_THREE_EQ_CROSSOVERSLOPE_TYPE _crossoverSlope;
@@ -255,7 +322,7 @@ namespace Sonosthesia
             return RESULT.OK;
         }
         
-        protected override RESULT CreateFilter(ChannelGroup dspGroup, out DSP filterDSP)
+        protected override RESULT CreateFilter(out DSP filterDSP)
         {
             RESULT result = RuntimeManager.CoreSystem.createDSPByType(DSP_TYPE.THREE_EQ, out filterDSP);
             UnityEngine.Debug.LogWarning($"{this} createDSPByType {result}");

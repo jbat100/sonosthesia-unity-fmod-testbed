@@ -4,18 +4,16 @@ using FMODUnity;
 
 namespace Sonosthesia
 {
-    public class FMODInstanceLoudnessChained : FMODInstanceLoudness
+    public class FMODLoudnessChained : FMODLoudness
     {
-        private ChannelGroup _instanceChannelGroup;
         private DSP _meterDSP;
         
-        protected override void Cleanup()
+        protected override void PerformCleanup(ChannelGroup channelGroup)
         {
-            if (_instanceChannelGroup.hasHandle() && _meterDSP.hasHandle())
+            if (channelGroup.hasHandle() && _meterDSP.hasHandle())
             {
                 // note : we don't own the instance channel group, it is not our business to release it
-                _instanceChannelGroup.removeDSP(_meterDSP);
-                _instanceChannelGroup = default;
+                channelGroup.removeDSP(_meterDSP);
             }
             
             if (_meterDSP.hasHandle())
@@ -25,14 +23,8 @@ namespace Sonosthesia
             }
         }
         
-        protected override bool TrySetup(EventInstance instance)
+        protected override bool PerformTrySetup(ChannelGroup channelGroup)
         {
-            if (!instance.isValid())
-            {
-                UnityEngine.Debug.LogWarning($"Setup called with invalid handle");
-                return false;
-            }
-            
             RESULT result;
             
             result = RuntimeManager.CoreSystem.createDSPByType(DSP_TYPE.LOUDNESS_METER, out _meterDSP);
@@ -41,15 +33,8 @@ namespace Sonosthesia
             {
                 return false;
             }
-            
-            result = instance.getChannelGroup(out _instanceChannelGroup); 
-            UnityEngine.Debug.LogWarning($"getChannelGroup {result}");
-            if (result != RESULT.OK)
-            {
-                return false;
-            }
-            
-            result = _instanceChannelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.TAIL, _meterDSP);
+
+            result = channelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.TAIL, _meterDSP);
             UnityEngine.Debug.LogWarning($"addDSP {result}");
             if (result != RESULT.OK)
             {

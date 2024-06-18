@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Sonosthesia
 {
-    public class FMODInstanceFFT : FMODInstanceProcessor
+    public class FMODFFT : FMODProcessor
     {
         [SerializeField] private DSP_FFT_WINDOW _windowType;
 
@@ -16,12 +16,10 @@ namespace Sonosthesia
         public int NumberOfSamples => numberOfSamples;
         
         private DSP _fftDSP;
-        private ChannelGroup _instanceChannelGroup;
-        private float[] _spectrum;
         
         public bool GetSpectrumData(float[] spectrum, int channel)
         {
-            if (!SetupDone)
+            if (!IsSetup)
             {
                 return false;
             }
@@ -45,14 +43,8 @@ namespace Sonosthesia
             return true;
         }
         
-        protected override bool TrySetup(EventInstance instance)
+        protected override bool PerformTrySetup(ChannelGroup channelGroup)
         {
-            if (!instance.isValid())
-            {
-                UnityEngine.Debug.LogWarning($"Setup called with invalid handle");
-                return false;
-            }
-
             RESULT result = RuntimeManager.CoreSystem.createDSPByType(DSP_TYPE.FFT, out _fftDSP);
             UnityEngine.Debug.LogWarning($"createDSPByType {result}");
             if (result != RESULT.OK)
@@ -76,14 +68,7 @@ namespace Sonosthesia
             
             RuntimeManager.StudioSystem.flushCommands();
             
-            result = instance.getChannelGroup(out _instanceChannelGroup); 
-            UnityEngine.Debug.LogWarning($"getChannelGroup {result}");
-            if (result != RESULT.OK)
-            {
-                return false;
-            }
-            
-            result = _instanceChannelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.TAIL, _fftDSP);
+            result = channelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.TAIL, _fftDSP);
             UnityEngine.Debug.LogWarning($"addDSP {result}");
             if (result != RESULT.OK)
             {
@@ -93,13 +78,12 @@ namespace Sonosthesia
             return true;
         }
 
-        protected override void Cleanup()
+        protected override void PerformCleanup(ChannelGroup channelGroup)
         {
-            if (_instanceChannelGroup.hasHandle() && _fftDSP.hasHandle())
+            if (channelGroup.hasHandle() && _fftDSP.hasHandle())
             {
                 // note : we don't own the instance channel group, it is not our business to release it
-                _instanceChannelGroup.removeDSP(_fftDSP);
-                _instanceChannelGroup = default;
+                channelGroup.removeDSP(_fftDSP);
             }
             
             if (_fftDSP.hasHandle())
