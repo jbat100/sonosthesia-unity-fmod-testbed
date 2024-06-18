@@ -77,34 +77,6 @@ namespace Sonosthesia
                 return false;
             }
 
-            //result = originalChannelGroup.getDSP(CHANNELCONTROL_DSP_INDEX.TAIL, out DSP channelGroupDSP);
-            //UnityEngine.Debug.LogWarning($"getDSP {result}");
-            //if (result != RESULT.OK)
-            //{
-            //    return false;
-            //}
-
-            //result = channelGroupDSP.getType(out DSP_TYPE dspType);
-            //UnityEngine.Debug.LogWarning($"getType {dspType}");
-            //if (result != RESULT.OK)
-            //{
-            //    return false;
-            //}
-            
-            result = _originalChannelGroup.getNumDSPs(out int numDSPs);
-            UnityEngine.Debug.LogWarning($"{nameof(TrySetup)} getNumDSPs {numDSPs}");
-            if (result != RESULT.OK)
-            {
-                return false;
-            }
-
-            //result = meterDSP.addInput(channelGroupDSP);
-            //UnityEngine.Debug.LogWarning($"addInput {result}");
-            //if (result != RESULT.OK)
-            //{
-            //    return false;
-            //}
-            
             result = _meterDSP.setActive(true);
             UnityEngine.Debug.LogWarning($"{nameof(TrySetup)} setActive {result}");
             if (result != RESULT.OK)
@@ -117,21 +89,7 @@ namespace Sonosthesia
 
         protected override bool TryGetLoudness(LoudnessSelector selector, out float loudness)
         {
-            if (!_meterDSP.hasHandle())
-            {
-                loudness = 0;
-                return false;
-            }
-            
-            // Get the metering data from the DSP meter
-            _meterDSP.getParameterData((int)DSP_LOUDNESS_METER.INFO, out IntPtr data, out uint length);
-
-            // https://www.fmod.com/docs/2.01/api/core-api-common-dsp-effects.html#fmod_dsp_loudness_meter_info_type
-            DSP_LOUDNESS_METER_INFO_TYPE info =
-                (DSP_LOUDNESS_METER_INFO_TYPE)Marshal.PtrToStructure(data, typeof(DSP_LOUDNESS_METER_INFO_TYPE));
-
-            loudness = info.Select(selector);
-            return true;
+            return LoudnessSelectionExtensions.GetLoudness(_meterDSP, selector, out loudness);
         }
     }
 }

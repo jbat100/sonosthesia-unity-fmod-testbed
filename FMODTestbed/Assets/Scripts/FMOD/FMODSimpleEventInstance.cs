@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Sonosthesia
 {
     
-    public class FMODSimpleEventInstance : FMODEventInstance
+    public class FMODSimpleEventInstance : FMODInstance
     {
         [SerializeField] private EventReference _fmodEventPath;
 

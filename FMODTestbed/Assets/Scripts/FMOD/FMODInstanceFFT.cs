@@ -3,63 +3,25 @@ using System.Runtime.InteropServices;
 using FMOD;
 using FMOD.Studio;
 using FMODUnity;
-using Sonosthesia.Audio;
-using UniRx;
 using UnityEngine;
 
 namespace Sonosthesia
 {
-    public class FMODInstanceSpectrum : AudioSpectrum
+    public class FMODInstanceFFT : FMODInstanceProcessor
     {
-        [SerializeField] private FMODEventInstance _instance;
-
         [SerializeField] private DSP_FFT_WINDOW _windowType;
 
-        private const float DEFAULT_SAMPLE_RATE = 44000;
+        [SerializeField] private int numberOfSamples = 1024;
+
+        public int NumberOfSamples => numberOfSamples;
         
         private DSP _fftDSP;
         private ChannelGroup _instanceChannelGroup;
-        private EventInstance _currentInstance;
-        private float _sampleRate;
-        private bool _setupDone;
         private float[] _spectrum;
-        private IDisposable _subscription;
-
-        protected override float OutputSampleRate => _setupDone ? _sampleRate : DEFAULT_SAMPLE_RATE;
-
-        protected virtual void OnDestroy()
-        {
-            Cleanup();
-        }
         
-        protected virtual void OnEnable()
+        public bool GetSpectrumData(float[] spectrum, int channel)
         {
-            _subscription = _instance.InstanceObservable.Subscribe(instance =>
-            {
-                Cleanup();
-                _currentInstance = instance;
-                _setupDone = false;
-            });
-        }
-
-        protected virtual void OnDisable()
-        {
-            _subscription?.Dispose();
-        }
-        
-        protected override bool GetSpectrumData(float[] spectrum, int channel)
-        {
-            if (!_currentInstance.isValid())
-            {
-                return false;
-            }
-            
-            if (!_setupDone)
-            {
-                _setupDone = TrySetup(_currentInstance);
-            }
-
-            if (!_setupDone)
+            if (!SetupDone)
             {
                 return false;
             }
@@ -82,24 +44,8 @@ namespace Sonosthesia
             
             return true;
         }
-
-        private void Cleanup()
-        {
-            if (_instanceChannelGroup.hasHandle() && _fftDSP.hasHandle())
-            {
-                // note : we don't own the instance channel group, it is not our business to release it
-                _instanceChannelGroup.removeDSP(_fftDSP);
-                _instanceChannelGroup = default;
-            }
-            
-            if (_fftDSP.hasHandle())
-            {
-                _fftDSP.release();
-                _fftDSP = default;
-            }
-        }
-
-        private bool TrySetup(EventInstance instance)
+        
+        protected override bool TrySetup(EventInstance instance)
         {
             if (!instance.isValid())
             {
@@ -114,15 +60,6 @@ namespace Sonosthesia
                 return false;
             }
 
-            result = RuntimeManager.CoreSystem.getSoftwareFormat(out int sampleRate, out _, out _);
-            UnityEngine.Debug.LogWarning($"getSoftwareFormat {result}");
-            if (result != RESULT.OK)
-            {
-                return false;
-            }
-
-            _sampleRate = sampleRate;
-            
             result = _fftDSP.setParameterInt((int)DSP_FFT.WINDOWTYPE, (int)_windowType);
             UnityEngine.Debug.LogWarning($"setParameterInt {DSP_FFT.WINDOWTYPE} {result}");
             if (result != RESULT.OK)
@@ -130,7 +67,7 @@ namespace Sonosthesia
                 return false;
             }
             
-            result = _fftDSP.setParameterInt((int)DSP_FFT.WINDOWSIZE, NumberOfSamples * 2);
+            result = _fftDSP.setParameterInt((int)DSP_FFT.WINDOWSIZE, numberOfSamples * 2);
             UnityEngine.Debug.LogWarning($"setParameterInt {DSP_FFT.WINDOWSIZE} {result}");
             if (result != RESULT.OK)
             {
@@ -155,7 +92,21 @@ namespace Sonosthesia
 
             return true;
         }
-    }
-    
-}
 
+        protected override void Cleanup()
+        {
+            if (_instanceChannelGroup.hasHandle() && _fftDSP.hasHandle())
+            {
+                // note : we don't own the instance channel group, it is not our business to release it
+                _instanceChannelGroup.removeDSP(_fftDSP);
+                _instanceChannelGroup = default;
+            }
+            
+            if (_fftDSP.hasHandle())
+            {
+                _fftDSP.release();
+                _fftDSP = default;
+            }
+        }
+    }
+}

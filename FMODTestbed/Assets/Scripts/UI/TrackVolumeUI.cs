@@ -11,7 +11,7 @@ namespace Sonosthesia
         private const string BASS_VOLUME_PARAMETER = "BassVolume";
         private const string DRUMS_VOLUME_PARAMETER = "DrumsVolume";
 
-        [SerializeField] private FMODEventInstance _instance;
+        [SerializeField] private FMODInstance _instance;
         
         [SerializeField] private Slider _bassSlider;
         [SerializeField] private Slider _drumsSlider;

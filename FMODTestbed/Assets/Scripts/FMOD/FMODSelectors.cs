@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.InteropServices;
 using FMOD;
 
 namespace Sonosthesia
@@ -29,6 +31,25 @@ namespace Sonosthesia
                 LoudnessSelector.MaxMomentary => info.maxtruepeak,
                 _ => 0
             };
+        }
+
+        public static bool GetLoudness(DSP dsp, LoudnessSelector selector, out float loudness)
+        {
+            if (!dsp.hasHandle())
+            {
+                loudness = 0;
+                return false;
+            }
+            
+            // Get the metering data from the DSP meter
+            dsp.getParameterData((int)DSP_LOUDNESS_METER.INFO, out IntPtr data, out uint length);
+
+            // https://www.fmod.com/docs/2.01/api/core-api-common-dsp-effects.html#fmod_dsp_loudness_meter_info_type
+            DSP_LOUDNESS_METER_INFO_TYPE info =
+                (DSP_LOUDNESS_METER_INFO_TYPE)Marshal.PtrToStructure(data, typeof(DSP_LOUDNESS_METER_INFO_TYPE));
+
+            loudness = info.Select(selector);
+            return true;
         }
     }
 }

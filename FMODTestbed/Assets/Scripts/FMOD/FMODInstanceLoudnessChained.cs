@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.InteropServices;
 using FMOD;
 using FMOD.Studio;
 using FMODUnity;
@@ -63,21 +61,7 @@ namespace Sonosthesia
 
         protected override bool TryGetLoudness(LoudnessSelector selector, out float loudness)
         {
-            if (!_meterDSP.hasHandle())
-            {
-                loudness = 0;
-                return false;
-            }
-            
-            // Get the metering data from the DSP meter
-            _meterDSP.getParameterData((int)DSP_LOUDNESS_METER.INFO, out IntPtr data, out uint length);
-
-            // https://www.fmod.com/docs/2.01/api/core-api-common-dsp-effects.html#fmod_dsp_loudness_meter_info_type
-            DSP_LOUDNESS_METER_INFO_TYPE info =
-                (DSP_LOUDNESS_METER_INFO_TYPE)Marshal.PtrToStructure(data, typeof(DSP_LOUDNESS_METER_INFO_TYPE));
-
-            loudness = info.Select(selector);
-            return true;
+            return LoudnessSelectionExtensions.GetLoudness(_meterDSP, selector, out loudness);
         }
     }    
 }

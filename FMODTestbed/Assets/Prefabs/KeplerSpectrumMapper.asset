@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf246472c8604cad9e809a64966f0c3d, type: 3}
-  m_Name: KeplerFFTMapper
+  m_Name: KeplerSpectrumMapper
   m_EditorClassIdentifier: 
   _lows:
     _bypass: 0

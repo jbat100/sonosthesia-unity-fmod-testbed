@@ -8,14 +8,14 @@ namespace Sonosthesia
 #if UNITY_EDITOR
     using UnityEditor;
 
-    [CustomEditor(typeof(FMODEventInstance), true)]
+    [CustomEditor(typeof(FMODInstance), true)]
     public class FMODEventInstanceEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
-            FMODEventInstance instance = (FMODEventInstance)target;
+            FMODInstance instance = (FMODInstance)target;
             if(GUILayout.Button("Restart"))
             {
                 instance.Restart();
@@ -28,7 +28,7 @@ namespace Sonosthesia
     }
 #endif
     
-    public abstract class FMODEventInstance : MonoBehaviour
+    public abstract class FMODInstance : MonoBehaviour
     {
         private readonly BehaviorSubject<EventInstance> _instancesSubject = new (default);
 
