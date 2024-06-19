@@ -1,5 +1,4 @@
 using FMOD;
-using FMOD.Studio;
 using FMODUnity;
 
 namespace Sonosthesia
