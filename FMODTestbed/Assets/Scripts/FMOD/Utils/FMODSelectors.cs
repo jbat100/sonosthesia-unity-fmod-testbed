@@ -33,14 +33,21 @@ namespace Sonosthesia
             };
         }
 
-        public static bool GetLoudness(DSP dsp, LoudnessSelector selector, out float loudness)
+        /// <summary>
+        /// Expects DSP to be DSP_TYPE.LOUDNESS_METER
+        /// </summary>
+        /// <param name="dsp"></param>
+        /// <param name="selector"></param>
+        /// <param name="loudness"></param>
+        /// <returns></returns>
+        public static bool Extract(this LoudnessSelector selector, DSP dsp, out float loudness)
         {
-            if (!dsp.hasHandle())
+            if (!dsp.hasHandle() || selector == LoudnessSelector.None)
             {
                 loudness = 0;
                 return false;
             }
-            
+
             // Get the metering data from the DSP meter
             dsp.getParameterData((int)DSP_LOUDNESS_METER.INFO, out IntPtr data, out uint length);
 

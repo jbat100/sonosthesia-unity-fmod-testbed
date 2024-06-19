@@ -59,6 +59,7 @@ namespace Sonosthesia
             
             if (_dsp.hasHandle())
             {
+                _dsp.disconnectAll(true, true);
                 _dsp.release();
                 _dsp = default;
             }

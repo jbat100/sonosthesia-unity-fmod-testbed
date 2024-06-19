@@ -45,7 +45,7 @@ namespace Sonosthesia
 
         protected override bool TryGetLoudness(LoudnessSelector selector, out float loudness)
         {
-            return LoudnessSelectionExtensions.GetLoudness(_meterDSP, selector, out loudness);
+            return selector.Extract(_meterDSP, out loudness);
         }
     }    
 }

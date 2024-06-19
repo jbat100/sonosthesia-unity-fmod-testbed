@@ -11,13 +11,13 @@ namespace Sonosthesia
     public class FMODLoudnessSidechained : FMODLoudness
     {
         private ChannelGroup _dspChannelGroup;
-        private DSP _meterDSP;
+        private DSP _loudnessDSP;
 
         protected override void PerformCleanup(ChannelGroup channelGroup)
         {
-            if (_dspChannelGroup.hasHandle() && _meterDSP.hasHandle())
+            if (_dspChannelGroup.hasHandle() && _loudnessDSP.hasHandle())
             {
-                _dspChannelGroup.removeDSP(_meterDSP);
+                _dspChannelGroup.removeDSP(_loudnessDSP);
             }
 
             if (_dspChannelGroup.hasHandle())
@@ -26,10 +26,10 @@ namespace Sonosthesia
                 _dspChannelGroup = default;
             }
 
-            if (_meterDSP.hasHandle())
+            if (_loudnessDSP.hasHandle())
             {
-                _meterDSP.release();
-                _meterDSP = default;
+                _loudnessDSP.release();
+                _loudnessDSP = default;
             }
         }
         
@@ -44,7 +44,7 @@ namespace Sonosthesia
                 return false;
             }
 
-            result = RuntimeManager.CoreSystem.createDSPByType(DSP_TYPE.LOUDNESS_METER, out _meterDSP);
+            result = RuntimeManager.CoreSystem.createDSPByType(DSP_TYPE.LOUDNESS_METER, out _loudnessDSP);
             UnityEngine.Debug.LogWarning($"{nameof(TrySetup)} createDSPByType {result}");
             if (result != RESULT.OK)
             {
@@ -58,14 +58,14 @@ namespace Sonosthesia
                 return false;
             }
 
-            result = _dspChannelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.TAIL, _meterDSP);
+            result = _dspChannelGroup.addDSP(CHANNELCONTROL_DSP_INDEX.TAIL, _loudnessDSP);
             UnityEngine.Debug.LogWarning($"{nameof(TrySetup)} addDSP {result}");
             if (result != RESULT.OK)
             {
                 return false;
             }
 
-            result = _meterDSP.setActive(true);
+            result = _loudnessDSP.setActive(true);
             UnityEngine.Debug.LogWarning($"{nameof(TrySetup)} setActive {result}");
             if (result != RESULT.OK)
             {
@@ -77,7 +77,7 @@ namespace Sonosthesia
 
         protected override bool TryGetLoudness(LoudnessSelector selector, out float loudness)
         {
-            return LoudnessSelectionExtensions.GetLoudness(_meterDSP, selector, out loudness);
+            return selector.Extract(_loudnessDSP, out loudness);
         }
     }
 }
