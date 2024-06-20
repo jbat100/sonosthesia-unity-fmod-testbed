@@ -2,7 +2,7 @@ using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     
     public class FMODSimpleEventInstance : FMODInstance
@@ -31,7 +31,7 @@ namespace Sonosthesia
         protected virtual void OnDestroy()
         {
             // Stop and release the event instance when the object is destroyed
-            _eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            _eventInstance.stop(global::FMOD.Studio.STOP_MODE.IMMEDIATE);
             _eventInstance.release();
             EventInstance = default;
         }
@@ -41,7 +41,7 @@ namespace Sonosthesia
             if (_eventInstance.hasHandle())
             {
                 // Stop and release the event instance when the object is destroyed
-                _eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                _eventInstance.stop(global::FMOD.Studio.STOP_MODE.IMMEDIATE);
                 _eventInstance.release();
                 EventInstance = default;
             }

@@ -5,7 +5,7 @@ using FMOD.Studio;
 using UniRx;
 using UnityEngine;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public class FMODInstanceProcessor : MonoBehaviour
     {

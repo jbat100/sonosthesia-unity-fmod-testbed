@@ -1,7 +1,7 @@
 using Sonosthesia.Audio;
 using UnityEngine;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public class FMODAudioSpectrum : AudioSpectrum
     {

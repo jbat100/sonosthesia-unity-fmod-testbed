@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using FMOD;
+using Sonosthesia.Utils;
 using UnityEngine;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public enum FMODBandEQ
     {
@@ -40,7 +41,7 @@ namespace Sonosthesia
         {
             public DSP_MULTIBAND_EQ_FILTER_TYPE filter;
             public float gain;
-            public float frequency;
+            [LogRange(20, 1000, 20000)] public float frequency;
             public float q;
         }
 

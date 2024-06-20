@@ -1,7 +1,7 @@
 using FMOD;
 using UnityEngine;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public abstract class FMODProcessor : MonoBehaviour
     {

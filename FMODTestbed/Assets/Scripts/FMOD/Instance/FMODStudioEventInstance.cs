@@ -1,7 +1,7 @@
 using FMODUnity;
 using UnityEngine;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public class FMODStudioEventInstance : FMODInstance
     {

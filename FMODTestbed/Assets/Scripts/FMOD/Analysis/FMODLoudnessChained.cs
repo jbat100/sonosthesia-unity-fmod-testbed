@@ -1,7 +1,7 @@
 using FMOD;
 using FMODUnity;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public class FMODLoudnessChained : FMODLoudness
     {

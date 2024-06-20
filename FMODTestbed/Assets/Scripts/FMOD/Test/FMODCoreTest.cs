@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
 #if UNITY_EDITOR    
     [CustomEditor(typeof(FMODCoreTest))]
@@ -60,7 +60,7 @@ namespace Sonosthesia
         void OnDestroy()
         {
             // Stop and release the event instance when the object is destroyed
-            eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            eventInstance.stop(global::FMOD.Studio.STOP_MODE.IMMEDIATE);
             eventInstance.release();
         }
     }    

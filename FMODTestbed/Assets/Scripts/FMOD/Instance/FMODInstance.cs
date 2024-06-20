@@ -3,7 +3,7 @@ using FMOD.Studio;
 using UniRx;
 using UnityEngine;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
 #if UNITY_EDITOR
     using UnityEditor;

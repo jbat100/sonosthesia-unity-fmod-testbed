@@ -2,7 +2,7 @@ using FMOD;
 using FMOD.Studio;
 using FMODUnity;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public static class FMODDSPUtils
     {

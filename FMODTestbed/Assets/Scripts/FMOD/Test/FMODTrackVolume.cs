@@ -2,7 +2,7 @@ using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public class FMODTrackVolume : MonoBehaviour
     {
@@ -34,7 +34,7 @@ namespace Sonosthesia
         void OnDestroy()
         {
             // Stop and release the event instance when the object is destroyed
-            eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            eventInstance.stop(global::FMOD.Studio.STOP_MODE.IMMEDIATE);
             eventInstance.release();
         }
     }    

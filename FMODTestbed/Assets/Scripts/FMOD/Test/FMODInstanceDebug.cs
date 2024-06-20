@@ -1,7 +1,7 @@
 using FMOD;
 using FMOD.Studio;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public class FMODInstanceDebug : FMODInstanceProcessor
     {

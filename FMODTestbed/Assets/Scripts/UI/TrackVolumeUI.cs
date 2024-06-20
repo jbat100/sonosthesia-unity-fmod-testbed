@@ -4,7 +4,7 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public class TrackVolumeUI : MonoBehaviour
     {

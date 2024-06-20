@@ -9,7 +9,7 @@ using Debug = UnityEngine.Debug;
 
 // WIP : not functional
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public enum AudioAnalysisBand
     {

@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using FMOD;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public enum LoudnessSelector
     {

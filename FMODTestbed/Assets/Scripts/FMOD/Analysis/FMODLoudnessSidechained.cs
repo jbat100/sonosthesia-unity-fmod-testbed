@@ -2,7 +2,7 @@ using FMOD;
 using FMOD.Studio;
 using FMODUnity;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     // Misnomer, creating another "dsp" channel group and adding the "instance" channel group
     // to it does not create a side chain, it feeds the instance group into the dsp group 

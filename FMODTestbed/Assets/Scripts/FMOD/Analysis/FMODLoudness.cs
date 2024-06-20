@@ -1,7 +1,7 @@
 using UnityEngine;
 using Sonosthesia.Signal;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public abstract class FMODLoudness : FMODProcessor
     {

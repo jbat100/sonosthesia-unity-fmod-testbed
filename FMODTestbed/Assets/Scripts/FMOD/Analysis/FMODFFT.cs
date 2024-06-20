@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using FMOD;
 using UnityEngine;
 
-namespace Sonosthesia
+namespace Sonosthesia.FMOD
 {
     public class FMODFFT : FMODDSPProcessor
     {
