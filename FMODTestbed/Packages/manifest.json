@@ -52,7 +52,9 @@
     "com.sonosthesia.adaptivemidi": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.adaptivemidi",
     "com.sonosthesia.trigger": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.trigger",
     "com.sonosthesia.generator": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.generator",
-    "com.sonosthesia.target": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.target"
+    "com.sonosthesia.target": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.target",
+    "com.sonosthesia.fmod": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.fmod",
+    "com.sonosthesia.ease": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.ease"
   },
   "scopedRegistries": [
     {

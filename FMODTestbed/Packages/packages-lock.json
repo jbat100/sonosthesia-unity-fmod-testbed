@@ -49,6 +49,14 @@
         "com.sonosthesia.flow": "1.8.0"
       }
     },
+    "com.sonosthesia.ease": {
+      "version": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.ease",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.neuecc.unirx": "7.1.0"
+      }
+    },
     "com.sonosthesia.flow": {
       "version": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.flow",
       "depth": 0,
@@ -59,6 +67,18 @@
         "com.sonosthesia.signal": "1.8.0",
         "com.sonosthesia.processing": "1.8.0",
         "com.sonosthesia.mapping": "1.8.0"
+      }
+    },
+    "com.sonosthesia.fmod": {
+      "version": "file:../../../sonosthesia-unity-packages/packages/com.sonosthesia.fmod",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.neuecc.unirx": "7.1.0",
+        "com.sonosthesia.audio": "1.8.0",
+        "com.sonosthesia.signal": "1.8.0",
+        "com.sonosthesia.utils": "1.8.0",
+        "com.sonosthesia.pack": "1.8.0"
       }
     },
     "com.sonosthesia.generator": {
