@@ -66,7 +66,7 @@ namespace Sonosthesia.FMOD
             }
             
             RESULT result = DSP.setParameterFloat(index, value);
-            UnityEngine.Debug.LogWarning($"{nameof(Apply)} setParameterFloat frequency {result}");
+            UnityEngine.Debug.LogWarning($"{nameof(Apply)} setParameterFloat frequency {index} {value} {result}");
             if (result != RESULT.OK)
             {
                 return false;
@@ -159,7 +159,7 @@ namespace Sonosthesia.FMOD
             index = parameter switch
             {
                 FMODBandEQParameter.Gain => GetGainParameter(band),
-                FMODBandEQParameter.Frequency => GetFilterParameter(band),
+                FMODBandEQParameter.Frequency => GetFrequencyParameter(band),
                 FMODBandEQParameter.Q => GetQParameter(band),
                 _ => -1
             };
